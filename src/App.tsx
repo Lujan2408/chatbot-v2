@@ -1,8 +1,10 @@
+import GenerateAI from "./components/GenerateAI"
+
 function App() {
  
   return (
     <>
-      <h2>Hola</h2>
+      <GenerateAI />
     </>
   )
 }
