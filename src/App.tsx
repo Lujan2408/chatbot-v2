@@ -1,3 +1,4 @@
+import Footer from "./components/Footer"
 import GenerateAI from "./components/GenerateAI"
 
 function App() {
@@ -5,6 +6,7 @@ function App() {
   return (
     <>
       <GenerateAI />
+      <Footer />       
     </>
   )
 }
