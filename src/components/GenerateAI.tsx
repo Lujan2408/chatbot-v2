@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import ErrorMessage from "./ErrorMessage"
 import { useAppStore } from "../stores/useAppStore"
 
@@ -7,7 +7,10 @@ export default function GenerateAI() {
   const isGenerating = useAppStore(state => state.isGenerating) 
   const generateAnswer = useAppStore(state => state.generateAsnwer)
   const chatAnswer = useAppStore(state => state.chat)
-
+  const [error, setError] = useState('')
+  
+  const inputRef = useRef<HTMLInputElement>(null)
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -21,9 +24,11 @@ export default function GenerateAI() {
 
     setError('')
     await generateAnswer(prompt)
-  }
 
-  const [error, setError] = useState('')
+    if(inputRef.current) {
+      inputRef.current.value = ''
+    }
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen bg-slate-800">
@@ -39,6 +44,7 @@ export default function GenerateAI() {
           <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
             <div className="relative w-full">
               <input
+                ref={inputRef}
                 name="prompt"
                 id="prompt"
                 className="border border-none bg-white p-4 rounded-full w-full text-sm font-medium sm:text-base"
@@ -70,9 +76,9 @@ export default function GenerateAI() {
             </div>
           </form>
 
-          {/* {isGenerating && (
+          {isGenerating && (
             <p className="mb-10 font-semibold text-slate-50">Generando...</p>
-          )} */}
+          )}
 
           <div className="flex justify-center mt-20">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl p-4 sm:p-6 max-w-full sm:max-w-2xl text-white text-left w-full">
