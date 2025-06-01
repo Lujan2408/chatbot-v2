@@ -5,6 +5,8 @@ import { useAppStore } from "../stores/useAppStore"
 export default function GenerateAI() {
 
   const isGenerating = useAppStore(state => state.isGenerating) 
+  const generateAnswer = useAppStore(state => state.generateAsnwer)
+  const chatAnswer = useAppStore(state => state.chat)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -18,6 +20,7 @@ export default function GenerateAI() {
     }
 
     setError('')
+    await generateAnswer(prompt)
   }
 
   const [error, setError] = useState('')
@@ -67,13 +70,13 @@ export default function GenerateAI() {
             </div>
           </form>
 
-          {isGenerating && (
+          {/* {isGenerating && (
             <p className="mb-10 font-semibold text-slate-50">Generando...</p>
-          )}
+          )} */}
 
           <div className="flex justify-center mt-20">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl p-4 sm:p-6 max-w-full sm:max-w-2xl text-white text-left w-full">
-              {/* {chatAnswer ? (
+              {chatAnswer ? (
                 <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base">
                   {chatAnswer}
                 </p>
@@ -87,7 +90,7 @@ export default function GenerateAI() {
                     respuesta.
                   </p>
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </div>
