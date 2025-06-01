@@ -1,38 +1,49 @@
-import { useRef, useState } from "react"
-import ErrorMessage from "./ErrorMessage"
-import { useAppStore } from "../stores/useAppStore"
+import { useRef, useState, useEffect } from "react";
+import ErrorMessage from "./ErrorMessage";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function GenerateAI() {
+  const isGenerating = useAppStore((state) => state.isGenerating);
+  const generateAnswer = useAppStore((state) => state.generateAsnwer);
+  const chatAnswer = useAppStore((state) => state.chat);
+  const [error, setError] = useState("");
 
-  const isGenerating = useAppStore(state => state.isGenerating) 
-  const generateAnswer = useAppStore(state => state.generateAsnwer)
-  const chatAnswer = useAppStore(state => state.chat)
-  const [error, setError] = useState('')
-  
-  const inputRef = useRef<HTMLInputElement>(null)
-  
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const form = new FormData(e.currentTarget)
-    const prompt = form.get('prompt') as string
+    const form = new FormData(e.currentTarget);
+    const prompt = form.get("prompt") as string;
 
-    if (prompt.trim() === '') {
-      setError('¡La consulta no puede ir vacía!')
-      return
+    if (prompt.trim() === "") {
+      setError("¡La consulta no puede ir vacía!");
+      return;
     }
 
-    setError('')
-    await generateAnswer(prompt)
+    setError("");
+    await generateAnswer(prompt);
 
-    if(inputRef.current) {
-      inputRef.current.value = ''
+    if (textareaRef.current) {
+      textareaRef.current.value = "";
+      textareaRef.current.style.height = "auto";
     }
-  }
+  };
+
+  const handleInput = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    handleInput();
+  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen bg-slate-800">
-
       <div className="flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-3xl text-center space-y-6">
           <h1 className="text-4xl sm:text-6xl text-white font-extrabold">
@@ -43,12 +54,14 @@ export default function GenerateAI() {
 
           <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
             <div className="relative w-full">
-              <input
-                ref={inputRef}
+              <textarea
+                ref={textareaRef}
                 name="prompt"
                 id="prompt"
-                className="border border-none bg-white p-4 rounded-full w-full text-sm font-medium sm:text-base"
+                rows={1}
+                onInput={handleInput}
                 placeholder="¿Qué deseas hacer?"
+                className="w-full max-w-3xl p-4 pr-12 rounded-3xl bg-white text-sm sm:text-base font-medium resize-none overflow-hidden transition-all duration-100 max-h-48"
               />
               <button
                 type="submit"
@@ -110,5 +123,5 @@ export default function GenerateAI() {
         />
       </div>
     </div>
-  )
+  );
 }
